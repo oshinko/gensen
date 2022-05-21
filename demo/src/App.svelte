@@ -1,6 +1,9 @@
 <script>
   import logo from './assets/svelte.png'
   import Counter from './lib/Counter.svelte'
+  import { zip } from '../../lib/main'
+
+  console.log('#', JSON.stringify([...zip([0, 2], [1, 3, 5])]))
 </script>
 
 <main>
