@@ -1,0 +1,10 @@
+version: '3.7'
+
+services:
+  notebook:
+    image: jupyter/datascience-notebook:latest
+    container_name: gensen-notebook
+    ports:
+      - '8888:8888'
+    volumes:
+      - .:/home/jovyan/work
