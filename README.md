@@ -5,12 +5,14 @@
 給与所得の源泉徴収税額を計算する例:
 
 ```js
+const income = 200000  // after deduction social insurance premiums, etc.
+
 const withholdingTax =
-  gensen({ date: '2019-01-01' })
-    .income(171890)
+  gensen({ date: '2019-01-01T00:00:00+09:00' })
+    .employmentIncome(200000)
     .monthly({ dependents: 2 })
 
-const expected = 2140
+const expected = 3140
 
 console.assert(
   withholdingTax === expected,
