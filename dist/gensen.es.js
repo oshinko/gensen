@@ -25,50 +25,55 @@ var table = {
     }), {}));
   }
 };
-function eim2019(income, { dependents } = {}) {
-  console.log(`# \u7D66\u4E0E (\u793E\u4F1A\u4FDD\u967A\u6599\u7B49\u63A7\u9664\u5F8C): \xA5${income.format()}`);
-  const item = table.data.find((x) => x.start <= income && income < x.end);
-  if (dependents >= 0)
-    return [
-      item.dependents0,
-      item.dependents1,
-      item.dependents2,
-      item.dependents3,
-      item.dependents4,
-      item.dependents5,
-      item.dependents6,
-      item.dependents7
-    ][dependents - 1];
-  return item.unknown;
+function newDate(date) {
+  return date === void 0 ? new Date() : new Date(date);
 }
+var eim2019 = {
+  accepts({ date }) {
+    return newDate(date) >= newDate("2019-01-01T00:00:00+09:00");
+  },
+  calc(amount, { dependents } = {}) {
+    const item = table.data.find((x) => x.start <= amount && amount < x.end);
+    if (dependents >= 0)
+      return [
+        item.dependents0,
+        item.dependents1,
+        item.dependents2,
+        item.dependents3,
+        item.dependents4,
+        item.dependents5,
+        item.dependents6,
+        item.dependents7
+      ][dependents - 1];
+    return item.unknown;
+  }
+};
+const eimArray = [eim2019, eim2019];
 Number.prototype.format = function() {
   return new Intl.NumberFormat().format(this);
 };
 function main({ date } = {}) {
-  date = date === void 0 ? new Date() : new Date(date);
-  console.log("# date", date);
+  date = newDate(date);
   return {
-    income(income) {
-      console.log(`# \u7D66\u4E0E (\u793E\u4F1A\u4FDD\u967A\u6599\u7B49\u63A7\u9664\u5F8C): \xA5${income.format()}`);
+    employmentIncome(amount) {
+      console.log(`# \u7D66\u4E0E (\u793E\u4F1A\u4FDD\u967A\u6599\u7B49\u63A7\u9664\u5F8C): \xA5${amount.format()}`);
       return {
         monthly({ dependents } = {}) {
-          if (new Date("2019-01-01T00:00:00+09:00") <= date && date <= new Date("2020-01-01T00:00:00+09:00"))
-            return eim2019(income, { dependents });
-          const rowVals = `16,510 13,270 10,040 7,560 5,930 4,320 2,710 1,080
-89,800`.replace(/,/g, "").split(/\s/).map(Number);
-          if (dependents)
-            return rowVals.slice(0, -1)[dependents - 1];
-          return rowVals.slice(-1)[0];
+          const eim = eimArray.find((x) => x.accepts({ date }));
+          if (eim)
+            return eim.calc(amount, { dependents });
+          throw new Error(`${date.toISOString()} is not supported.`);
         },
-        nichigaku: void 0,
-        shoyo: void 0
+        daily: void 0,
+        bonus: void 0
       };
     },
-    hoshu(hoshu) {
-      console.log(`# \u5831\u916C: \xA5${hoshu.format()}`);
+    retirementIncome: void 0,
+    remuneration(amount) {
+      console.log(`# \u5831\u916C: \xA5${amount.format()}`);
       return {
-        kojin: {},
-        hojin: {}
+        resident: {},
+        domesticCorporation: {}
       };
     }
   };
