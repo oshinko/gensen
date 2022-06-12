@@ -4,6 +4,10 @@
 
 給与所得の源泉徴収税額を計算する例:
 
+```html
+<script src="./dist/gensen.umd.js"></script>
+```
+
 ```js
 const income = 200000  // after deduction social insurance premiums, etc.
 
